@@ -1,6 +1,6 @@
 import router from './router';
 
-import 'Vuex';
+window.Vuex = require('vuex');
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -35,5 +35,5 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 const app = new Vue({
     el: '#app',
     router,
-    store: new Vuex.store(store) 
+    store: new Vuex.Store(store)
 });
