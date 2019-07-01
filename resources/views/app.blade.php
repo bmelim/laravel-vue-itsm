@@ -10,6 +10,7 @@
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
         <!-- Styles -->
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
@@ -18,5 +19,6 @@
             <app-component></app-component>
         </div>
         <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/semantic.min.js') }}"></script>
     </body>
 </html>
