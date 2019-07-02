@@ -29203,6 +29203,7 @@ var map = {
 	"./components/AppComponent.vue": "./resources/js/components/AppComponent.vue",
 	"./components/ExampleComponent.vue": "./resources/js/components/ExampleComponent.vue",
 	"./components/Login.vue": "./resources/js/components/Login.vue",
+	"./components/Logout.vue": "./resources/js/components/Logout.vue",
 	"./components/Register.vue": "./resources/js/components/Register.vue",
 	"./components/Secure.vue": "./resources/js/components/Secure.vue"
 };
@@ -29585,6 +29586,38 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Logout.vue":
+/*!********************************************!*\
+  !*** ./resources/js/components/Logout.vue ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+var render, staticRenderFns
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_0__["default"])(
+  script,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+component.options.__file = "resources/js/components/Logout.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/Register.vue":
 /*!**********************************************!*\
   !*** ./resources/js/components/Register.vue ***!
@@ -29796,24 +29829,25 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: {
     status: '',
-    token: localStorage.getItem('token') || '',
-    user: {}
+    token: {},
+    isLoggedIn: false
   },
   mutations: {
     auth_request: function auth_request(state) {
       state.status = 'loading';
     },
-    auth_success: function auth_success(state, token, user) {
+    auth_success: function auth_success(state, token) {
       state.status = 'success';
+      state.isLoggedIn = true;
       state.token = token;
-      state.user = user;
     },
     auth_error: function auth_error(state) {
       state.status = 'error';
     },
     logout: function logout(state) {
       state.status = '';
-      state.token = '';
+      state.token = {};
+      state.isLoggedIn = false;
     }
   },
   actions: {
@@ -29822,19 +29856,16 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       return new Promise(function (resolve, reject) {
         commit('auth_request');
         axios__WEBPACK_IMPORTED_MODULE_2___default()({
-          url: '/api/login',
+          url: 'auth/login',
           data: user,
           method: 'POST'
         }).then(function (resp) {
           var token = resp.data.token;
-          var user = resp.data.user;
-          localStorage.setItem('token', token);
-          axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common['Authorization'] = token;
-          commit('auth_success', token, user);
+          commit('auth_success', token);
           resolve(resp);
         })["catch"](function (err) {
+          console.error(err);
           commit('auth_error');
-          localStorage.removeItem('token');
           reject(err);
         });
       });
@@ -29844,19 +29875,20 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       return new Promise(function (resolve, reject) {
         commit('auth_request');
         axios__WEBPACK_IMPORTED_MODULE_2___default()({
-          url: '/api/register',
+          url: '/auth/register',
           data: user,
           method: 'POST'
         }).then(function (resp) {
+          // const user_id = resp.user_id;
+          // localStorage.setItem('token', token)
+          // axios.defaults.headers.common['Authorization'] = token;
           var token = resp.data.token;
-          var user = resp.data.user;
-          localStorage.setItem('token', token);
-          axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common['Authorization'] = token;
-          commit('auth_success', token, user);
+          commit('auth_success', token);
           resolve(resp);
         })["catch"](function (err) {
-          commit('auth_error', err);
-          localStorage.removeItem('token');
+          console.error(err);
+          commit('auth_error', err); // localStorage.removeItem('token');
+
           reject(err);
         });
       });
@@ -29864,16 +29896,16 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     logout: function logout(_ref3) {
       var commit = _ref3.commit;
       return new Promise(function (resolve, reject) {
-        commit('logout');
-        localStorage.removeItem('token');
-        delete axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common['Authorization'];
+        commit('logout'); // localStorage.removeItem('token');
+        // delete axios.defaults.headers.common['Authorization'];
+
         resolve();
       });
     }
   },
   getters: {
     isLoggedIn: function isLoggedIn(state) {
-      return !!state.token;
+      return state.isLoggedIn;
     },
     authStatus: function authStatus(state) {
       return state.status;

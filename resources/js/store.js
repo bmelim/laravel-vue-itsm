@@ -7,61 +7,60 @@ Vue.use(Vuex);
 export default {
     state: {
         status: '',
-        token: localStorage.getItem('token') || '',
-        user : {},
+        token: {},
+        isLoggedIn: false
       },
       mutations: {
         auth_request(state){
             state.status = 'loading';
           },
-          auth_success(state, token, user){
+          auth_success(state, token){
             state.status = 'success';
+            state.isLoggedIn = true;
             state.token = token;
-            state.user = user;
           },
           auth_error(state){
             state.status = 'error';
           },
           logout(state){
             state.status = '';
-            state.token = '';
+            state.token = {};
+            state.isLoggedIn = false;
           },
       },
       actions: {
         login({commit}, user){
             return new Promise((resolve, reject) => {
               commit('auth_request');
-              axios({url: '/api/login', data: user, method: 'POST' })
+              axios({url: 'auth/login', data: user, method: 'POST' })
               .then(resp => {
                 const token = resp.data.token;
-                const user = resp.data.user;
-                localStorage.setItem('token', token);
-                axios.defaults.headers.common['Authorization'] = token;
-                commit('auth_success', token, user);
+                commit('auth_success', token);
                 resolve(resp);
               })
               .catch(err => {
-                commit('auth_error')
-                localStorage.removeItem('token');
+                console.error(err);
+                commit('auth_error');
                 reject(err);
-              })
-            })
+              });
+            });
         },
         register({commit}, user){
             return new Promise((resolve, reject) => {
               commit('auth_request');
-              axios({url: '/api/register', data: user, method: 'POST' })
+              axios({url: '/auth/register', data: user, method: 'POST' })
               .then(resp => {
+                // const user_id = resp.user_id;
+                // localStorage.setItem('token', token)
+                // axios.defaults.headers.common['Authorization'] = token;
                 const token = resp.data.token;
-                const user = resp.data.user;
-                localStorage.setItem('token', token)
-                axios.defaults.headers.common['Authorization'] = token;
-                commit('auth_success', token, user);
+                commit('auth_success', token);
                 resolve(resp);
               })
               .catch(err => {
+                console.error(err);
                 commit('auth_error', err);
-                localStorage.removeItem('token');
+                // localStorage.removeItem('token');
                 reject(err);
               })
             })
@@ -69,14 +68,14 @@ export default {
           logout({commit}){
             return new Promise((resolve, reject) => {
               commit('logout');
-              localStorage.removeItem('token');
-              delete axios.defaults.headers.common['Authorization'];
+              // localStorage.removeItem('token');
+              // delete axios.defaults.headers.common['Authorization'];
               resolve();
             });
           }
       },
       getters : {
-        isLoggedIn: state => !!state.token,
+        isLoggedIn: state => state.isLoggedIn,
         authStatus: state => state.status,
       }
 };
