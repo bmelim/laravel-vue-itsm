@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from './store';
 import Login from './components/Login.vue';
 import Secure from './components/Secure.vue';
 import Register from './components/Register.vue';
@@ -28,21 +29,25 @@ var router =  new VueRouter({
           path: '/secure',
           name: 'secure',
           component: Secure,
-          meta: { 
+          meta: {
             requiresAuth: true
           }
         },
         {
           path: '/about',
           name: 'about',
-          component: About
+          component: About,
+          meta: {
+            requiresAuth: true
+          }
         }
       ]
 });
 
 router.beforeEach((to, from, next) => {
     if(to.matched.some(record => record.meta.requiresAuth)) {
-      if (store.getters.isLoggedIn) {
+        var isLoggedIn =  store.state.isLoggedIn;
+      if (isLoggedIn) {
         next();
         return;
       }

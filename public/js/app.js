@@ -13030,7 +13030,7 @@ var render = function() {
     "div",
     [
       _c("router-link", { attrs: { to: "/" } }, [_vm._v("Home")]),
-      _vm._v(" |\n  "),
+      _vm._v(" |\r\n  "),
       _c("router-link", { attrs: { to: "/about" } }, [_vm._v("About")]),
       _vm.isLoggedIn
         ? _c("span", [
@@ -13038,7 +13038,7 @@ var render = function() {
             _c("a", { on: { click: _vm.logout } }, [_vm._v("Logout")])
           ])
         : _vm._e(),
-      _vm._v(" |\n  "),
+      _vm._v(" |\r\n  "),
       _c("router-link", { attrs: { to: "/register" } }, [_vm._v("Register")]),
       _vm._v(" "),
       _c("router-view")
@@ -29752,10 +29752,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
-/* harmony import */ var _components_Login_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Login.vue */ "./resources/js/components/Login.vue");
-/* harmony import */ var _components_Secure_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Secure.vue */ "./resources/js/components/Secure.vue");
-/* harmony import */ var _components_Register_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/Register.vue */ "./resources/js/components/Register.vue");
-/* harmony import */ var _components_About_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/About.vue */ "./resources/js/components/About.vue");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store */ "./resources/js/store.js");
+/* harmony import */ var _components_Login_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Login.vue */ "./resources/js/components/Login.vue");
+/* harmony import */ var _components_Secure_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/Secure.vue */ "./resources/js/components/Secure.vue");
+/* harmony import */ var _components_Register_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/Register.vue */ "./resources/js/components/Register.vue");
+/* harmony import */ var _components_About_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/About.vue */ "./resources/js/components/About.vue");
+
 
 
 
@@ -29768,33 +29770,38 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   routes: [{
     path: '/',
     name: 'home',
-    component: _components_Login_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    component: _components_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   }, {
     path: '/login',
     name: 'login',
-    component: _components_Login_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    component: _components_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   }, {
     path: '/register',
     name: 'register',
-    component: _components_Register_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+    component: _components_Register_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
   }, {
     path: '/secure',
     name: 'secure',
-    component: _components_Secure_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    component: _components_Secure_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
     meta: {
       requiresAuth: true
     }
   }, {
     path: '/about',
     name: 'about',
-    component: _components_About_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+    component: _components_About_vue__WEBPACK_IMPORTED_MODULE_6__["default"],
+    meta: {
+      requiresAuth: true
+    }
   }]
 });
 router.beforeEach(function (to, from, next) {
   if (to.matched.some(function (record) {
     return record.meta.requiresAuth;
   })) {
-    if (store.getters.isLoggedIn) {
+    var isLoggedIn = _store__WEBPACK_IMPORTED_MODULE_2__["default"].state.isLoggedIn;
+
+    if (isLoggedIn) {
       next();
       return;
     }
@@ -29933,8 +29940,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/montypanday/Projects/ITSM/app/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/montypanday/Projects/ITSM/app/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\inetpub\wwwroot\laravel-vue-itsm\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\inetpub\wwwroot\laravel-vue-itsm\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
