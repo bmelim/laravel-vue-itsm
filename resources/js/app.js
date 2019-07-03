@@ -29,3 +29,7 @@ const app = new Vue({
     router,
     store: new Vuex.Store(store)
 });
+
+app.$store.subscribe((mutation, state) => {
+    localStorage.setItem('store', JSON.stringify(app.$store.state));
+});

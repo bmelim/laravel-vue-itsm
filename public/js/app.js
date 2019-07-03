@@ -13030,7 +13030,7 @@ var render = function() {
     "div",
     [
       _c("router-link", { attrs: { to: "/" } }, [_vm._v("Home")]),
-      _vm._v(" |\r\n  "),
+      _vm._v(" |\n  "),
       _c("router-link", { attrs: { to: "/about" } }, [_vm._v("About")]),
       _vm.isLoggedIn
         ? _c("span", [
@@ -13038,7 +13038,7 @@ var render = function() {
             _c("a", { on: { click: _vm.logout } }, [_vm._v("Logout")])
           ])
         : _vm._e(),
-      _vm._v(" |\r\n  "),
+      _vm._v(" |\n  "),
       _c("router-link", { attrs: { to: "/register" } }, [_vm._v("Register")]),
       _vm._v(" "),
       _c("router-view")
@@ -29230,6 +29230,71 @@ webpackContext.id = "./resources/js sync recursive \\.vue$/";
 
 /***/ }),
 
+/***/ "./resources/js/actions.js":
+/*!*********************************!*\
+  !*** ./resources/js/actions.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  login: function login(_ref, user) {
+    var commit = _ref.commit;
+    return new Promise(function (resolve, reject) {
+      commit('auth_request');
+      axios({
+        url: 'auth/login',
+        data: user,
+        method: 'POST'
+      }).then(function (resp) {
+        var token = resp.data.token;
+        commit('auth_success', token);
+        resolve(resp);
+      })["catch"](function (err) {
+        console.error(err);
+        commit('auth_error');
+        reject(err);
+      });
+    });
+  },
+  register: function register(_ref2, user) {
+    var commit = _ref2.commit;
+    return new Promise(function (resolve, reject) {
+      commit('auth_request');
+      axios({
+        url: '/auth/register',
+        data: user,
+        method: 'POST'
+      }).then(function (resp) {
+        // const user_id = resp.user_id;
+        // localStorage.setItem('token', token)
+        // axios.defaults.headers.common['Authorization'] = token;
+        var token = resp.data.token;
+        commit('auth_success', token);
+        resolve(resp);
+      })["catch"](function (err) {
+        console.error(err);
+        commit('auth_error', err); // localStorage.removeItem('token');
+
+        reject(err);
+      });
+    });
+  },
+  logout: function logout(_ref3) {
+    var commit = _ref3.commit;
+    return new Promise(function (resolve, reject) {
+      commit('logout');
+      localStorage.clear(); // delete axios.defaults.headers.common['Authorization'];
+
+      resolve();
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -29272,6 +29337,9 @@ var app = new Vue({
   el: '#app',
   router: _router__WEBPACK_IMPORTED_MODULE_1__["default"],
   store: new Vuex.Store(_store__WEBPACK_IMPORTED_MODULE_2__["default"])
+});
+app.$store.subscribe(function (mutation, state) {
+  localStorage.setItem('store', JSON.stringify(app.$store.state));
 });
 
 /***/ }),
@@ -29740,6 +29808,56 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/getters.js":
+/*!*********************************!*\
+  !*** ./resources/js/getters.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  isLoggedIn: function isLoggedIn(state) {
+    return state.isLoggedIn;
+  },
+  authStatus: function authStatus(state) {
+    return state.status;
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/mutations.js":
+/*!***********************************!*\
+  !*** ./resources/js/mutations.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  auth_request: function auth_request(state) {
+    state.status = 'loading';
+  },
+  auth_success: function auth_success(state, token) {
+    state.status = 'success';
+    state.isLoggedIn = true;
+    state.token = token;
+  },
+  auth_error: function auth_error(state) {
+    state.status = 'error';
+  },
+  logout: function logout(state) {
+    state.status = '';
+    state.token = {};
+    state.isLoggedIn = false;
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/router.js":
 /*!********************************!*\
   !*** ./resources/js/router.js ***!
@@ -29827,97 +29945,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _mutations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mutations */ "./resources/js/mutations.js");
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./actions */ "./resources/js/actions.js");
+/* harmony import */ var _getters__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./getters */ "./resources/js/getters.js");
+
+
 
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+var localState = {
+  status: '',
+  token: {},
+  isLoggedIn: false
+};
+
+if (localStorage.getItem("store") != null) {
+  localState = JSON.parse(localStorage.getItem("store"));
+}
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  state: {
-    status: '',
-    token: {},
-    isLoggedIn: false
-  },
-  mutations: {
-    auth_request: function auth_request(state) {
-      state.status = 'loading';
-    },
-    auth_success: function auth_success(state, token) {
-      state.status = 'success';
-      state.isLoggedIn = true;
-      state.token = token;
-    },
-    auth_error: function auth_error(state) {
-      state.status = 'error';
-    },
-    logout: function logout(state) {
-      state.status = '';
-      state.token = {};
-      state.isLoggedIn = false;
-    }
-  },
-  actions: {
-    login: function login(_ref, user) {
-      var commit = _ref.commit;
-      return new Promise(function (resolve, reject) {
-        commit('auth_request');
-        axios__WEBPACK_IMPORTED_MODULE_2___default()({
-          url: 'auth/login',
-          data: user,
-          method: 'POST'
-        }).then(function (resp) {
-          var token = resp.data.token;
-          commit('auth_success', token);
-          resolve(resp);
-        })["catch"](function (err) {
-          console.error(err);
-          commit('auth_error');
-          reject(err);
-        });
-      });
-    },
-    register: function register(_ref2, user) {
-      var commit = _ref2.commit;
-      return new Promise(function (resolve, reject) {
-        commit('auth_request');
-        axios__WEBPACK_IMPORTED_MODULE_2___default()({
-          url: '/auth/register',
-          data: user,
-          method: 'POST'
-        }).then(function (resp) {
-          // const user_id = resp.user_id;
-          // localStorage.setItem('token', token)
-          // axios.defaults.headers.common['Authorization'] = token;
-          var token = resp.data.token;
-          commit('auth_success', token);
-          resolve(resp);
-        })["catch"](function (err) {
-          console.error(err);
-          commit('auth_error', err); // localStorage.removeItem('token');
-
-          reject(err);
-        });
-      });
-    },
-    logout: function logout(_ref3) {
-      var commit = _ref3.commit;
-      return new Promise(function (resolve, reject) {
-        commit('logout'); // localStorage.removeItem('token');
-        // delete axios.defaults.headers.common['Authorization'];
-
-        resolve();
-      });
-    }
-  },
-  getters: {
-    isLoggedIn: function isLoggedIn(state) {
-      return state.isLoggedIn;
-    },
-    authStatus: function authStatus(state) {
-      return state.status;
-    }
-  }
+  state: localState,
+  mutations: _mutations__WEBPACK_IMPORTED_MODULE_2__["default"],
+  actions: _actions__WEBPACK_IMPORTED_MODULE_3__["default"],
+  getters: _getters__WEBPACK_IMPORTED_MODULE_5__["default"]
 });
 
 /***/ }),
@@ -29940,8 +29991,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\inetpub\wwwroot\laravel-vue-itsm\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\inetpub\wwwroot\laravel-vue-itsm\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/montypanday/Projects/ITSM/app/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/montypanday/Projects/ITSM/app/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
