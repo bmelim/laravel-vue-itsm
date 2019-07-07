@@ -1,32 +1,82 @@
 <template>
- <div>
-   <form class="login" @submit.prevent="login">
-     <h1>Sign in</h1>
-     <label>Email</label>
-     <input required v-model="email" type="email" placeholder="Name"/>
-     <label>Password</label>
-     <input required v-model="password" type="password" placeholder="Password"/>
-     <hr/>
-     <button type="submit">Login</button>
-   </form>
- </div>
+  <div>
+    <div class="ui middle aligned center aligned grid">
+      <div class="column">
+        <h2 class="ui image header">
+          <div class="content">Log-in to your account</div>
+        </h2>
+        <form @submit.prevent="login" class="ui large form">
+          <div class="ui stacked secondary segment">
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" v-model="email" name="email" placeholder="E-mail address" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="lock icon"></i>
+                <input type="password" v-model="password" name="password" placeholder="Password" />
+              </div>
+            </div>
+
+            <button type="submit" class="ui fluid large teal submit button">
+              <div v-bind:class="{ active: loading }" class="ui centered inline loader"></div>
+              <span v-if="loading == false">Login</span>
+            </button>
+          </div>
+
+          <div class="ui error message"></div>
+        </form>
+
+        <div class="ui message">
+          New to us?
+          <a href="https://s.codepen.io/voltron2112/debug/PqrEPM?">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+<style>
+body > .grid {
+  height: 100%;
+}
+.image {
+  margin-top: -100px;
+}
+.column {
+  max-width: 450px;
+}
+</style>
 <script>
-    export default{
-        data(){
-            return {
-                email: "",
-                password:""
-            }
-        },
-        methods: {
-            login: function(){
-                let email = this.email
-                let password = this.password
-                this.$store.dispatch('login',{ email, password })
-                .then(() => this.$router.push('/'))
-                .catch(err => console.log(err))
-            }
-        }
+import SimpleLayout from "./layouts/SimpleLayout";
+
+export default {
+  name: "Login",
+  created() {
+    this.$emit("update:layout", SimpleLayout);
+  },
+  data() {
+    return {
+      email: "",
+      password: "",
+      error: "",
+      loading: false
+    };
+  },
+  methods: {
+    login: function() {
+      this.loading = true;
+      let email = this.email;
+      let password = this.password;
+      this.$store
+        .dispatch("login", { email, password })
+        .then(() => {
+          this.$router.push("/");
+          this.loading = false;
+        })
+        .catch(err => console.log(err));
     }
+  }
+};
 </script>

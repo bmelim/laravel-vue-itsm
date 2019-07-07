@@ -16,5 +16,5 @@ Route::get('{path}', function () {
 })->where('path', '(.*)');
 
 Route::post('/auth/login','Auth\ApiAuthController@login');
-Route::post('/auth/logout','Auth\ApiAuthController@logout');
 Route::post('/auth/register','Auth\ApiAuthController@register');
+Route::post('/auth/logout','Auth\ApiAuthController@logout');

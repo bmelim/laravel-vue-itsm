@@ -10,7 +10,7 @@ export default {
           })
           .catch(err => {
             console.error(err);
-            commit('auth_error');
+            commit('auth_error', err);
             reject(err);
           });
         });
@@ -20,8 +20,6 @@ export default {
           commit('auth_request');
           axios({url: '/auth/register', data: user, method: 'POST' })
           .then(resp => {
-            // const user_id = resp.user_id;
-            // localStorage.setItem('token', token)
             // axios.defaults.headers.common['Authorization'] = token;
             const token = resp.data.token;
             commit('auth_success', token);
@@ -32,14 +30,22 @@ export default {
             commit('auth_error', err);
             // localStorage.removeItem('token');
             reject(err);
-          })
-        })
+          });
+        });
       },
       logout({commit}){
         return new Promise((resolve, reject) => {
-          commit('logout');
-          localStorage.clear();
           // delete axios.defaults.headers.common['Authorization'];
+          axios({url: 'auth/logout', method: 'POST' })
+          .then(resp => {
+            commit('logout');
+            localStorage.clear();
+          })
+          .catch(err => {
+            console.error(err);
+            commit('auth_error', err);
+            reject(err);
+          });
           resolve();
         });
       }

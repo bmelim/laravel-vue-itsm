@@ -7,8 +7,10 @@ export default {
         state.isLoggedIn = true;
         state.token = token;
     },
-    auth_error(state) {
+    auth_error(state, err) {
         state.status = 'error';
+        state.isLoggedIn = false;
+        state.error = err;
     },
     logout(state) {
         state.status = '';

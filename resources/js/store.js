@@ -9,7 +9,7 @@ Vue.use(Vuex);
 var localState = {
   status: '',
   token: {},
-  isLoggedIn: false
+  isLoggedIn: false,
 };
 
 if (localStorage.getItem("store") != null) {

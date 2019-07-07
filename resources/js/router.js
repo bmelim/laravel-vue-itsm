@@ -5,6 +5,7 @@ import Login from './components/Login.vue';
 import Secure from './components/Secure.vue';
 import Register from './components/Register.vue';
 import About from './components/About.vue';
+import Home from './components/Home.vue';
 Vue.use(VueRouter);
 
 var router =  new VueRouter({
@@ -13,7 +14,10 @@ var router =  new VueRouter({
         {
           path: '/',
           name: 'home',
-          component: Login
+          component: Home,
+          meta: {
+            requiresAuth: true
+          }
         },
         {
           path: '/login',
