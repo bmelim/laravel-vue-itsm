@@ -1849,19 +1849,33 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.$emit("update:layout", _layouts_SimpleLayout__WEBPACK_IMPORTED_MODULE_0__["default"]);
   },
+  computed: {
+    loading: function loading() {
+      return this.$store.getters.authStatus == "loading";
+    },
+    isError: function isError() {
+      return this.$store.getters.authStatus == "error";
+    },
+    authError: function authError() {
+      var authError = this.$store.getters.authError;
+
+      if (authError == null) {
+        return '';
+      }
+
+      return authError.response.statusText;
+    }
+  },
   data: function data() {
     return {
       email: "",
-      password: "",
-      error: "",
-      loading: false
+      password: ""
     };
   },
   methods: {
     login: function login() {
       var _this = this;
 
-      this.loading = true;
       var email = this.email;
       var password = this.password;
       this.$store.dispatch("login", {
@@ -1869,8 +1883,6 @@ __webpack_require__.r(__webpack_exports__);
         password: password
       }).then(function () {
         _this.$router.push("/");
-
-        _this.loading = false;
       })["catch"](function (err) {
         return console.log(err);
       });
@@ -13983,7 +13995,11 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "ui error message" })
+            _vm.isError
+              ? _c("div", { staticClass: "ui red message" }, [
+                  _vm._v(_vm._s(_vm.authError))
+                ])
+              : _vm._e()
           ]
         ),
         _vm._v(" "),
@@ -14488,7 +14504,7 @@ function normalizeComponent (
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /*!
-  * vue-router v3.0.6
+  * vue-router v3.0.7
   * (c) 2019 Evan You
   * @license MIT
   */
@@ -15876,10 +15892,8 @@ function createMatcher (
         }
       }
 
-      if (record) {
-        location.path = fillParams(record.path, location.params, ("named route \"" + name + "\""));
-        return _createRoute(record, location, redirectedFrom)
-      }
+      location.path = fillParams(record.path, location.params, ("named route \"" + name + "\""));
+      return _createRoute(record, location, redirectedFrom)
     } else if (location.path) {
       location.params = {};
       for (var i = 0; i < pathList.length; i++) {
@@ -16034,7 +16048,12 @@ var positionStore = Object.create(null);
 function setupScroll () {
   // Fix for #1585 for Firefox
   // Fix for #2195 Add optional third attribute to workaround a bug in safari https://bugs.webkit.org/show_bug.cgi?id=182678
-  window.history.replaceState({ key: getStateKey() }, '', window.location.href.replace(window.location.origin, ''));
+  // Fix for #2774 Support for apps loaded from Windows file shares not mapped to network drives: replaced location.origin with
+  // window.location.protocol + '//' + window.location.host
+  // location.host contains the port and location.hostname doesn't
+  var protocolAndPath = window.location.protocol + '//' + window.location.host;
+  var absolutePath = window.location.href.replace(protocolAndPath, '');
+  window.history.replaceState({ key: getStateKey() }, '', absolutePath);
   window.addEventListener('popstate', function (e) {
     saveScrollPosition();
     if (e.state && e.state.key) {
@@ -16606,7 +16625,6 @@ function bindEnterGuard (
 ) {
   return function routeEnterGuard (to, from, next) {
     return guard(to, from, function (cb) {
-      next(cb);
       if (typeof cb === 'function') {
         cbs.push(function () {
           // #750
@@ -16617,6 +16635,7 @@ function bindEnterGuard (
           poll(cb, match.instances, key, isValid);
         });
       }
+      next(cb);
     })
   }
 }
@@ -17151,7 +17170,7 @@ function createHref (base, fullPath, mode) {
 }
 
 VueRouter.install = install;
-VueRouter.version = '3.0.6';
+VueRouter.version = '3.0.7';
 
 if (inBrowser && window.Vue) {
   window.Vue.use(VueRouter);
@@ -30255,7 +30274,6 @@ __webpack_require__.r(__webpack_exports__);
         commit('auth_success', token);
         resolve(resp);
       })["catch"](function (err) {
-        console.error(err);
         commit('auth_error', err);
         reject(err);
       });
@@ -31115,6 +31133,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   authStatus: function authStatus(state) {
     return state.status;
+  },
+  authError: function authError(state) {
+    return state.authError;
   }
 });
 
@@ -31141,7 +31162,7 @@ __webpack_require__.r(__webpack_exports__);
   auth_error: function auth_error(state, err) {
     state.status = 'error';
     state.isLoggedIn = false;
-    state.error = err;
+    state.authError = err;
   },
   logout: function logout(state) {
     state.status = '';
@@ -31256,11 +31277,14 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 var localState = {
   status: '',
   token: {},
-  isLoggedIn: false
+  isLoggedIn: false,
+  authError: null
 };
 
 if (localStorage.getItem("store") != null) {
   localState = JSON.parse(localStorage.getItem("store"));
+  localState.authError = null;
+  localState.status = '';
 }
 
 /* harmony default export */ __webpack_exports__["default"] = ({

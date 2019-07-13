@@ -10,10 +10,13 @@ var localState = {
   status: '',
   token: {},
   isLoggedIn: false,
+  authError: null
 };
 
 if (localStorage.getItem("store") != null) {
   localState = JSON.parse(localStorage.getItem("store"));
+  localState.authError = null;
+  localState.status = '';
 }
 
 export default {

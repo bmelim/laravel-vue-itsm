@@ -9,7 +9,6 @@ export default {
             resolve(resp);
           })
           .catch(err => {
-            console.error(err);
             commit('auth_error', err);
             reject(err);
           });

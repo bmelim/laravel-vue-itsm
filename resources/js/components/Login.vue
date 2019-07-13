@@ -26,7 +26,7 @@
             </button>
           </div>
 
-          <div class="ui error message"></div>
+          <div v-if="isError" class="ui red message">{{ authError }}</div>
         </form>
 
         <div class="ui message">
@@ -56,24 +56,35 @@ export default {
   created() {
     this.$emit("update:layout", SimpleLayout);
   },
+  computed: {
+    loading: function() {
+      return this.$store.getters.authStatus == "loading";
+    },
+    isError: function() {
+      return this.$store.getters.authStatus == "error";
+    },
+    authError: function(){
+      let authError = this.$store.getters.authError;
+      if(authError == null){
+        return '';
+      }
+      return authError.response.statusText;
+    }
+  },
   data() {
     return {
       email: "",
-      password: "",
-      error: "",
-      loading: false
+      password: ""
     };
   },
   methods: {
     login: function() {
-      this.loading = true;
       let email = this.email;
       let password = this.password;
       this.$store
         .dispatch("login", { email, password })
         .then(() => {
           this.$router.push("/");
-          this.loading = false;
         })
         .catch(err => console.log(err));
     }
