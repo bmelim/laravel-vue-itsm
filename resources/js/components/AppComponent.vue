@@ -1,5 +1,5 @@
 <template>
-  <component :is="layout">
+  <component :is="layout" class="enlarge">
     <router-view :layout.sync="layout"/>
   </component>
 </template>

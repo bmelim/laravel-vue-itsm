@@ -1,19 +1,18 @@
 <template>
-  <div>
-    <div class="ui middle aligned center aligned grid">
+    <div class="ui middle aligned center aligned grid enlarge">
       <div class="column">
         <h2 class="ui image header">
           <div class="content">Log-in to your account</div>
         </h2>
         <form @submit.prevent="login" class="ui large form">
           <div class="ui stacked secondary segment">
-            <div class="field">
+            <div class="field" v-bind:class="{ error: isError }">
               <div class="ui left icon input">
                 <i class="user icon"></i>
                 <input type="text" v-model="email" name="email" placeholder="E-mail address" />
               </div>
             </div>
-            <div class="field">
+            <div class="field" v-bind:class="{ error: isError }">
               <div class="ui left icon input">
                 <i class="lock icon"></i>
                 <input type="password" v-model="password" name="password" placeholder="Password" />
@@ -35,7 +34,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 <style>
 body > .grid {
