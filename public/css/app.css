@@ -1,2 +1,10 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);
+@import url(https://fonts.googleapis.com/css?family=Nunito);#app {
+  height: 100%;
+  width: 100%;
+}
+
+.enlarge {
+  height: 100%;
+  width: 100%;
+}
 

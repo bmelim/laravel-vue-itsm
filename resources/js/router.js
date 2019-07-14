@@ -6,6 +6,7 @@ import Secure from './components/Secure.vue';
 import Register from './components/Register.vue';
 import About from './components/About.vue';
 import Home from './components/Home.vue';
+import NotFound from './components/NotFound.vue';
 Vue.use(VueRouter);
 
 var router =  new VueRouter({
@@ -44,6 +45,11 @@ var router =  new VueRouter({
           meta: {
             requiresAuth: true
           }
+        },
+        {
+          path: '/*',
+          name: 'NotFound',
+          component: NotFound
         }
       ]
 });
