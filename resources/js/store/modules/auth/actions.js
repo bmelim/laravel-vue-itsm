@@ -1,11 +1,10 @@
 export default {
-    login({commit}, user){
+    authLogin({commit}, user){
         return new Promise((resolve, reject) => {
           commit('auth_request');
           axios({url: 'auth/login', data: user, method: 'POST' })
           .then(resp => {
-            const token = resp.data.token;
-            commit('auth_success', token);
+            commit('auth_success', resp.data);
             resolve(resp);
           })
           .catch(err => {
@@ -14,7 +13,7 @@ export default {
           });
         });
     },
-    register({commit}, user){
+    authRegister({commit}, user){
         return new Promise((resolve, reject) => {
           commit('auth_request');
           axios({url: '/auth/register', data: user, method: 'POST' })
@@ -32,12 +31,12 @@ export default {
           });
         });
       },
-      logout({commit}){
+      authLogout({commit}){
         return new Promise((resolve, reject) => {
           // delete axios.defaults.headers.common['Authorization'];
           axios({url: 'auth/logout', method: 'POST' })
           .then(resp => {
-            commit('logout');
+            commit('auth_logout');
             localStorage.clear();
           })
           .catch(err => {

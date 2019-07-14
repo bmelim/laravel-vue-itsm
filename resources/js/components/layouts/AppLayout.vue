@@ -11,7 +11,7 @@
 export default {
   methods: {
     logout: function() {
-      this.$store.dispatch("logout").then(() => {
+      this.$store.dispatch("authLogout").then(() => {
         this.$router.push("/login");
       });
     }
