@@ -1,6 +1,8 @@
 import './bootstrap';
 import router from './router';
 import store from './store';
+import Echo from "laravel-echo";
+import Pusher from 'pusher-js';
 
 window.Vuex = require('vuex');
 window.Vue = require('vue');
@@ -32,4 +34,18 @@ const app = new Vue({
 
 app.$store.subscribe((mutation, state) => {
     localStorage.setItem('store', JSON.stringify(app.$store.state));
+});
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: 'aab59f720ba5d6208d2a',
+  cluster: 'ap4',
+  forceTLS: true
+});
+
+var channel = window.Echo.channel('my-channel');
+
+channel.listen('.my-event', function(data) {
+    console.log(data);
+  alert(JSON.stringify(data));
 });
