@@ -22,4 +22,8 @@ export default {
         state.authIsLoggedIn = false;
         state.authError = null;
     },
+    auth_reset(state) {
+        state.authError = null;
+        state.authStatus = '';
+    }
 };

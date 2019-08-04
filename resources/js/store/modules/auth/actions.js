@@ -24,8 +24,8 @@ export default {
             resolve(resp);
           })
           .catch(err => {
-            console.error(err);
-            commit('auth_error', err);
+            const response = err.response
+            commit('auth_error', response.data.errors);
             // localStorage.removeItem('token');
             reject(err);
           });
@@ -46,5 +46,8 @@ export default {
           });
           resolve();
         });
+      },
+      authReset({commit}){
+        commit('auth_reset');
       }
   };

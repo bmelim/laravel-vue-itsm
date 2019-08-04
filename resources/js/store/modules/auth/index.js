@@ -11,7 +11,6 @@ var localState = {
 
 if (localStorage.getItem("store") != null) {
     localState = JSON.parse(localStorage.getItem("store")).Auth;
-    console.log(localState);
 }
 
 export default {
