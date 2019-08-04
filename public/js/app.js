@@ -1983,13 +1983,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: {
     isError: function isError() {
       return this.is_error;
     },
     authError: function authError() {
-      return this.error;
+      if (this.errors != null) {
+        return this.errors;
+      }
+
+      return {
+        "default": ["Something went wrong!"]
+      };
     }
   },
   data: function data() {
@@ -1999,7 +2007,7 @@ __webpack_require__.r(__webpack_exports__);
       password: "",
       password_confirmation: "",
       is_admin: null,
-      error: null,
+      errors: null,
       is_error: false
     };
   },
@@ -2011,18 +2019,31 @@ __webpack_require__.r(__webpack_exports__);
         name: this.name,
         email: this.email,
         password: this.password,
-        password_confirmation: this.password,
+        password_confirmation: this.password_confirmation,
         is_admin: this.is_admin
       };
+
+      if (data.password != data.password_confirmation) {
+        this.is_error = true;
+        this.errors = {
+          "default": ["Passwords do not match"]
+        };
+        return;
+      }
+
       this.$store.dispatch("authRegister", data).then(function (response) {
         _this.$router.push("/");
       })["catch"](function (err) {
         console.log(err);
         _this.is_error = true;
-        _this.error = _this.$store.getters.authError;
+        _this.errors = _this.$store.getters.authError;
 
         _this.$store.dispatch("authReset");
       });
+    },
+    reset: function reset() {
+      this.is_error = false;
+      this.errors = null;
     }
   }
 });
@@ -2073,7 +2094,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\nbody > .grid {\n  height: 100%;\n}\n.image {\n  margin-top: -100px;\n}\n.column {\n  max-width: 450px;\n}\n", ""]);
+exports.push([module.i, "\nbody > .grid {\r\n  height: 100%;\n}\n.image {\r\n  margin-top: -100px;\n}\n.column {\r\n  max-width: 450px;\n}\r\n", ""]);
 
 // exports
 
@@ -24601,133 +24622,153 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "ui stacked secondary segment" }, [
-              _c("div", { staticClass: "field" }, [
-                _c("div", { staticClass: "ui left icon input" }, [
-                  _c("i", { staticClass: "address book icon" }),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.name,
-                        expression: "name"
-                      }
-                    ],
-                    attrs: {
-                      type: "text",
-                      id: "name",
-                      required: "",
-                      autofocus: "",
-                      placeholder: "Name"
-                    },
-                    domProps: { value: _vm.name },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+              _c(
+                "div",
+                { staticClass: "field", class: { error: _vm.isError } },
+                [
+                  _c("div", { staticClass: "ui left icon input" }, [
+                    _c("i", { staticClass: "address book icon" }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.name,
+                          expression: "name"
                         }
-                        _vm.name = $event.target.value
+                      ],
+                      attrs: {
+                        type: "text",
+                        id: "name",
+                        required: "",
+                        autofocus: "",
+                        placeholder: "Name"
+                      },
+                      domProps: { value: _vm.name },
+                      on: {
+                        focus: _vm.reset,
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.name = $event.target.value
+                        }
                       }
-                    }
-                  })
-                ])
-              ]),
+                    })
+                  ])
+                ]
+              ),
               _vm._v(" "),
-              _c("div", { staticClass: "field" }, [
-                _c("div", { staticClass: "ui left icon input" }, [
-                  _c("i", { staticClass: "user icon" }),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.email,
-                        expression: "email"
-                      }
-                    ],
-                    attrs: {
-                      type: "text",
-                      name: "email",
-                      placeholder: "E-mail address"
-                    },
-                    domProps: { value: _vm.email },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+              _c(
+                "div",
+                { staticClass: "field", class: { error: _vm.isError } },
+                [
+                  _c("div", { staticClass: "ui left icon input" }, [
+                    _c("i", { staticClass: "user icon" }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.email,
+                          expression: "email"
                         }
-                        _vm.email = $event.target.value
+                      ],
+                      attrs: {
+                        type: "text",
+                        name: "email",
+                        placeholder: "E-mail address"
+                      },
+                      domProps: { value: _vm.email },
+                      on: {
+                        focus: _vm.reset,
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.email = $event.target.value
+                        }
                       }
-                    }
-                  })
-                ])
-              ]),
+                    })
+                  ])
+                ]
+              ),
               _vm._v(" "),
-              _c("div", { staticClass: "field" }, [
-                _c("div", { staticClass: "ui left icon input" }, [
-                  _c("i", { staticClass: "lock icon" }),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.password,
-                        expression: "password"
-                      }
-                    ],
-                    attrs: {
-                      type: "password",
-                      name: "password",
-                      placeholder: "Password",
-                      required: ""
-                    },
-                    domProps: { value: _vm.password },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+              _c(
+                "div",
+                { staticClass: "field", class: { error: _vm.isError } },
+                [
+                  _c("div", { staticClass: "ui left icon input" }, [
+                    _c("i", { staticClass: "lock icon" }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.password,
+                          expression: "password"
                         }
-                        _vm.password = $event.target.value
+                      ],
+                      attrs: {
+                        type: "password",
+                        name: "password",
+                        placeholder: "Password",
+                        required: ""
+                      },
+                      domProps: { value: _vm.password },
+                      on: {
+                        focus: _vm.reset,
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.password = $event.target.value
+                        }
                       }
-                    }
-                  })
-                ])
-              ]),
+                    })
+                  ])
+                ]
+              ),
               _vm._v(" "),
-              _c("div", { staticClass: "field" }, [
-                _c("div", { staticClass: "ui left icon input" }, [
-                  _c("i", { staticClass: "lock icon" }),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.password_confirmation,
-                        expression: "password_confirmation"
-                      }
-                    ],
-                    attrs: {
-                      type: "password",
-                      name: "password-confirm",
-                      placeholder: "Confirm Password",
-                      required: ""
-                    },
-                    domProps: { value: _vm.password_confirmation },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+              _c(
+                "div",
+                { staticClass: "field", class: { error: _vm.isError } },
+                [
+                  _c("div", { staticClass: "ui left icon input" }, [
+                    _c("i", { staticClass: "lock icon" }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.password_confirmation,
+                          expression: "password_confirmation"
                         }
-                        _vm.password_confirmation = $event.target.value
+                      ],
+                      attrs: {
+                        type: "password",
+                        name: "password-confirm",
+                        placeholder: "Confirm Password",
+                        required: ""
+                      },
+                      domProps: { value: _vm.password_confirmation },
+                      on: {
+                        focus: _vm.reset,
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.password_confirmation = $event.target.value
+                        }
                       }
-                    }
-                  })
-                ])
-              ]),
+                    })
+                  ])
+                ]
+              ),
               _vm._v(" "),
               _vm._m(1)
             ]),
@@ -41682,9 +41723,7 @@ var routes = [{
   name: 'NotFound',
   component: _components_NotFound_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
 }];
-console.log(routes);
 routes = routes.concat(_components_auth_routes__WEBPACK_IMPORTED_MODULE_2__["default"]);
-console.log(routes);
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
   routes: routes
@@ -41933,8 +41972,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/montypanday/Projects/ITSM/app/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/montypanday/Projects/ITSM/app/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\inetpub\wwwroot\laravel-vue-itsm\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\inetpub\wwwroot\laravel-vue-itsm\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

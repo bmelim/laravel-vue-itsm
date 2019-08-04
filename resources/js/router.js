@@ -37,9 +37,9 @@ var routes = [
     component: NotFound
   }
 ];
-console.log(routes);
+
 routes = routes.concat(authRoutes);
-console.log(routes);
+
 var router = new VueRouter({
   mode: 'history',
   routes: routes

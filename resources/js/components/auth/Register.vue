@@ -6,19 +6,19 @@
       </h2>
       <form @submit.prevent="register" class="ui large form">
         <div class="ui stacked secondary segment">
-          <div class="field">
+          <div class="field" v-bind:class="{ error: isError }">
             <div class="ui left icon input">
               <i class="address book icon"></i>
-              <input type="text" id="name" v-model="name" required autofocus placeholder="Name" />
+              <input type="text" id="name" v-model="name" required autofocus placeholder="Name" @focus="reset"/>
             </div>
           </div>
-          <div class="field">
+          <div class="field" v-bind:class="{ error: isError }">
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input type="text" v-model="email" name="email" placeholder="E-mail address" />
+              <input type="text" v-model="email" name="email" placeholder="E-mail address" @focus="reset"/>
             </div>
           </div>
-          <div class="field">
+          <div class="field" v-bind:class="{ error: isError }">
             <div class="ui left icon input">
               <i class="lock icon"></i>
               <input
@@ -27,10 +27,11 @@
                 name="password"
                 placeholder="Password"
                 required
+                @focus="reset"
               />
             </div>
           </div>
-          <div class="field">
+          <div class="field" v-bind:class="{ error: isError }">
             <div class="ui left icon input">
               <i class="lock icon"></i>
               <input
@@ -39,6 +40,7 @@
                 name="password-confirm"
                 placeholder="Confirm Password"
                 required
+                @focus="reset"
               />
             </div>
           </div>
@@ -48,7 +50,7 @@
         </div>
         <div v-if="isError" class="ui red message">
           <ul>
-          <li v-bind:key="name" v-for="(value, name) in authError">{{ value.toString() }}</li>
+            <li v-bind:key="name" v-for="(value, name) in authError">{{ value.toString() }}</li>
           </ul>
         </div>
       </form>
@@ -77,7 +79,10 @@ export default {
       return this.is_error;
     },
     authError: function() {
-      return this.error;
+      if (this.errors != null) {
+        return this.errors;
+      }
+      return { default: ["Something went wrong!"] };
     }
   },
   data() {
@@ -87,7 +92,7 @@ export default {
       password: "",
       password_confirmation: "",
       is_admin: null,
-      error: null,
+      errors: null,
       is_error: false
     };
   },
@@ -97,9 +102,16 @@ export default {
         name: this.name,
         email: this.email,
         password: this.password,
-        password_confirmation: this.password,
+        password_confirmation: this.password_confirmation,
         is_admin: this.is_admin
       };
+
+      if (data.password != data.password_confirmation) {
+        this.is_error = true;
+        this.errors = { default: ["Passwords do not match"] };
+        return;
+      }
+
       this.$store
         .dispatch("authRegister", data)
         .then(response => {
@@ -108,9 +120,13 @@ export default {
         .catch(err => {
           console.log(err);
           this.is_error = true;
-          this.error = this.$store.getters.authError;
+          this.errors = this.$store.getters.authError;
           this.$store.dispatch("authReset");
         });
+    },
+    reset: function(){
+        this.is_error = false;
+        this.errors = null;
     }
   }
 };
